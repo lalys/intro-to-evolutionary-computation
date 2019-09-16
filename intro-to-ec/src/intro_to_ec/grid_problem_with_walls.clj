@@ -1,5 +1,8 @@
 (ns intro-to-ec.grid-problem-with-walls)
 
+; use :as to temporarily rename directory. Will be reset when repl closed.
+; (require '[intro-to-ec.grid-problem-with-walls :as walls])
+
 (defn origin-goal?
   "A goal checking function that assumes the target
    position is the origin, i.e., [0 0]."
