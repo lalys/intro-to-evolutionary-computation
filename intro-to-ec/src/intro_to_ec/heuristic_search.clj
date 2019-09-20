@@ -22,12 +22,35 @@
   (if (= :start-node (get came-from node))
     [node]
     (conj (generate-path came-from (get came-from node)) node)))
+(defn heuristic-search
+ {:get-next-node
+ })
+;;(def heuristic-search(a, b):
+;; return abs(a.x - b.x) + abs(a.y - b.y))
+
+;;frontier = PriorityQueue()
+  ;;frontier.put(start, 0)
+  ;;came-from = {}
+  ;;cost-so-far = {}
+
+  ;;while not frontier.empty()
+    ;;current = frontier.get()
+
+    ;;if current-node == goal:
+      ;;break
+
+    ;;for next in graph.neighbors(current-node):
+      ;;if next not in came_from:
+        ;;priority = heuristic(goal, next-node)
+        ;;frontier.put(next, priority)
+        ;;came-from[next-node] = current-node
+
 
 (defn search
   [{:keys [get-next-node add-children]}
    {:keys [goal? make-children]}
    start-node max-calls]
-  (loop [frontier [start-node]
+  (loop [frontier [start-node] ;; Make priority map
          came-from {start-node :start-node}
          num-calls 0]
     (println num-calls ": " frontier)
@@ -43,5 +66,5 @@
            (add-children
             kids
             (rest frontier))
-           (reduce (fn [cf child] (assoc cf child current-node)) came-from kids)
+           (reduce (fn [cf child] (assoc cf child current-node)) came-from kids) ;; Add heuristic-search
            (inc num-calls)))))))
