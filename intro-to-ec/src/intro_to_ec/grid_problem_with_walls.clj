@@ -44,6 +44,9 @@
   (filter (partial legal-state min-range max-range wall-set)
           (map (partial apply-move position) all-moves)))
 
+(defn heuristic [[xa xb] [ya yb]]
+  (+ (Math/abs (- xa yb)) (Math/abs (- xb yb))))
+
 (def min-range -10)
 (def max-range 10)
 (def no-walls #{})
@@ -65,6 +68,7 @@
    the origin. The ranges specify the bounds on the grid world, and the
    `wall-set` is a (possibly empty) set of positions that can't be entered
    or crossed."
-  [min-range max-range wall-set]
+  [min-range max-range wall-set heuristic]
   {:goal? origin-goal?
-   :make-children (partial grid-children min-range max-range wall-set)})
+   :make-children (partial grid-children min-range max-range wall-set)
+   :heuristic #(cond (= heuristic "heuristic") (heuristic [0 0] %1 %2 %3))})
