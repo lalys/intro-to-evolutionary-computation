@@ -68,7 +68,7 @@
    the origin. The ranges specify the bounds on the grid world, and the
    `wall-set` is a (possibly empty) set of positions that can't be entered
    or crossed."
-  [min-range max-range wall-set heuristic]
+  [min-range max-range wall-set]
   {:goal? origin-goal?
    :make-children (partial grid-children min-range max-range wall-set)
    :heuristic #(cond (= heuristic "heuristic") (heuristic [0 0] %1 %2 %3))})
