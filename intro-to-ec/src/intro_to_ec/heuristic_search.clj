@@ -33,6 +33,10 @@
     [node]
     (conj (generate-path came-from (get came-from node)) node)))
 
+(def heu-dijkstra
+{:get-next-node first
+:add-children #(concat %2 %1)})
+
 (def heu
   {:get-next-node #(first (first %))
   :add-children #(reduce (fn [first child] (assoc first child (%1 child nil nil))) %2 %3)})
@@ -40,7 +44,7 @@
 
 (def a-star
   {:get-next-node #(first (first %))
-    :add-children #(reduce (fn [first child] (assoc first child ( + (%1 child) %4 ))) %2 %3)})
+    :add-children #(reduce (fn [first child] (assoc first child (+ (%1 child) %4))) %2 %3)})
 
   (defn search
     [{:keys [get-next-node add-children]}
@@ -110,3 +114,46 @@
           (reduce (fn [c child] (assoc c child (heuristic child nil nil))) cost-so-far kids)
           (reduce (fn [cf child] (assoc cf child current-node)) came-from kids)
           (inc num-calls)))))))
+
+(defn dijkstra-search
+  [{:keys [get-next-node add-children]}
+   {:keys [goal? make-children heuristic]}
+   start-node max-calls]
+  (loop [frontier (cpm/priority-map start-node (heuristic start-node) 0 nil)
+         cost-so-far {start-node 0}
+         came-from {start-node :start-node}
+         num-calls 0]
+    (println num-calls ": " frontier)
+    (println came-from)
+    (println "The Cost is: " cost-so-far)
+    (let [current-node (get-next-node frontier)]
+      (cond
+        (goal? current-node) (generate-path came-from current-node)
+        (= num-calls max-calls) :max-calls-reached
+        :else
+        (let [kids (remove-previous-states
+                    (make-children current-node) frontier (keys came-from))]
+          (recur
+           (add-children kids (rest frontier))
+           (reduce (fn [c child] (assoc c child(+ (get cost-so-far current-node) 1))) cost-so-far kids)
+           (reduce (fn [cf child] (assoc cf child current-node)) came-from kids)
+           (inc num-calls)))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
